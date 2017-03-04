@@ -29,7 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'emptyText'=>"Задачи не найдены...",
         'columns' => [
             'id',
-
+            [
+                'attribute' => 'id_transport',
+                'format' => 'raw',
+                'value' => function($data){ 
+                    if (isset($data->transport)){
+                        return $data->transport->name;
+                    } else {
+                        return "<ОБЪЕКТ НЕ НАЙДЕН>";
+                    }
+                }
+            ],
             [
                 'attribute' => 'datetask',
                 'format' => 'raw',

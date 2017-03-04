@@ -31,6 +31,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'name',
             [
+                'attribute' => 'id_transport',
+                'format' => 'raw',
+                'value' => function($data){ 
+                    if (isset($data->transport)){
+                        return $data->transport->name;
+                    } else {
+                        return "<ОБЪЕКТ НЕ НАЙДЕН>";
+                    }
+                }
+            ],
+            [
                 'attribute' => 'id_product',
                 'format' => 'raw',
                 'value' => function($data){ 

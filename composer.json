@@ -13,66 +13,18 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "stable",
-    "repositories": [
-        {  
-            "type": "package",
-            "package": {
-                "name": "anixmedia/stockquotes",
-                "version": "1.0.2",
-                "type": "package",
-                "source": {
-                    "url": "git@bitbucket.org:anixmedia/stockquotes.git",
-                    "type": "git",
-                    "reference": "exampleclient"
-                },
-            "require": {
-                "yiisoft/yii2": "*",
-                "miloschuman/yii2-highcharts-widget": "*"
-            },
-            "autoload": {
-		"psr-4": {
-			"anixmedia\\stockclient\\": ""
-		}
-            }
-        }
-    },
- {  
-            "type": "package",
-            "package": {
-                "name": "anixmedia/financeApi",
-                "version": "1.0.2",
-                "type": "package",
-                "source": {
-                    "url": "git@bitbucket.org:anixmedia/stockquotes.git",
-                    "type": "git",
-                    "reference": "finance-api"
-                },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "autoload": {
-                "psr-4": {
-                        "anixmedia\\financeApi\\": ""
-                    }
-                }
-            }
-        }
-    ],    
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "kartik-v/yii2-widgets": "@dev",
-        "kartik-v/yii2-grid": "@dev",
-        "anixmedia/stockquotes": "*",
-        "anixmedia/financeApi": "*"
+        "kartik-v/yii2-grid": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
-
         "codeception/base": "^2.2.3",
         "codeception/verify": "~0.3.1"
     },

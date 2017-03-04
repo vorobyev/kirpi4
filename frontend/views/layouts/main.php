@@ -41,7 +41,13 @@ AppAsset::register($this);
                     ['label' => 'Готовые продукты', 'url' => ['/product']],
                     ['label' => 'Единицы измерения', 'url' => ['/measure']],
                     ['label' => 'Ингредиенты', 'url' => ['/ingredient']],
-                    ['label' => 'Рецептуры', 'url' => ['/recipe']]
+                    ['label' => 'Рецептуры', 'url' => ['/recipe']],
+                    ['label' => 'Транспорт', 'url' => ['/transport']]
+                ]
+            ]:"",
+        (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label' => 'Отчеты', 
+            'items' => [
+                    ['label' => 'Использованные ингредиенты за период', 'url' => ['/report/job_period']],
                 ]
             ]:"",
         (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label'=>''

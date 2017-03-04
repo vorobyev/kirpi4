@@ -6,6 +6,7 @@ use Yii;
 use app\models\Recipe;
 use app\models\Process;
 use app\models\RecipeCompose;
+use app\models\Transport;
 use common\models\User;
 
 /**
@@ -37,8 +38,8 @@ class Task extends \yii\db\ActiveRecord
     {
         return [
             [['datetask', 'dateredline', 'id_recipe', 'count', 'status', 'id_user'], 'required','message'=>'Поле необходимо заполнить'],
-            [['datetask', 'dateredline'], 'safe'],
-            [['id_recipe', 'status', 'id_user'], 'integer'],
+            [['datetask', 'dateredline','date_success'], 'safe'],
+            [['id_recipe', 'status', 'id_user','id_transport'], 'integer'],
             [['mail'], 'string'],
             [['count'], 'number','message'=>'Введите корректное число'],
         ];
@@ -113,6 +114,8 @@ class Task extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'id_user' => 'Для пользователя',
             'mail' => 'Сообщение',
+            'id_transport' => 'Транспорт',
+            'date_success' => 'Дата выполнения (факт)',
         ];
     }
     
@@ -122,5 +125,9 @@ class Task extends \yii\db\ActiveRecord
     
     public function getUser() {
         return $this->hasOne(User::className(), ['id' => 'id_user']);
+    }
+    
+    public function getTransport() {
+        return $this->hasOne(Transport::className(), ['id' => 'id_transport']);
     }
 }

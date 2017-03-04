@@ -78,41 +78,43 @@ class TaskuserController extends Controller
         $post = Yii::$app->request->post('Process');
 
         if (isset($post['all'])){
-            $processes = Process::find()->where(['id_task'=>$id])->all();
-            foreach ($processes as $proc) {
-                $proc->count_fact = $proc->count;
-                $proc->save();
-            }
+//            $processes = Process::find()->where(['id_task'=>$id])->all();
+//            foreach ($processes as $proc) {
+//                $proc->count_fact = $proc->count;
+//                $proc->save();
+//            }
             $task->status = 3;
+            date_default_timezone_set('Europe/Moscow' );
+            $task->date_success = date("Y-m-d H:i:s");
             $task->save(false,null,true);
         }
         
         if (isset($post['id'])){
             $process = Process::findOne($post['id']);
             $count = Yii::$app->request->post('Process')['count_add'];
-            if ($count > ($process->count - $process->count_fact)){
-                $error = "Общее количество ингредиента больше, чем в задании!";
-            } else {
+//            if ($count > ($process->count - $process->count_fact)){
+//                $error = "Общее количество ингредиента больше, чем в задании!";
+//            } else {
                 $process->count_fact = $process->count_fact + $count;
                 $process->save();
                 if ($task->status < 2) {
                     $task->status = 2;
                     $task->save(false,null,true);
                 };
-                $success = true;
-                $processes = Process::find()->where(['id_task'=>$id])->all();
-                foreach ($processes as $proc) {
-                    if ($proc->count != $proc->count_fact) {
-                        $success = false;
-                        break;
-                    }
-                }
-                if ($success == true) {
-                    $task->status = 3;
-                    $task->save(false,null,true);
-                }
+//                $success = true;
+//                $processes = Process::find()->where(['id_task'=>$id])->all();
+//                foreach ($processes as $proc) {
+//                    if ($proc->count != $proc->count_fact) {
+//                        $success = false;
+//                        break;
+//                    }
+//                }
+//                if ($success == true) {
+//                    $task->status = 3;
+//                    $task->save(false,null,true);
+//                }
                 
-            }
+//            }
         }
         $processes = Process::find()->where(['id_task'=>$id])->all();
         $provider = new ActiveDataProvider([
@@ -123,7 +125,7 @@ class TaskuserController extends Controller
             'task' => $task,
             'processes' => $processes,
             'provider' => $provider,
-            'error' => $error
+            //'error' => $error
         ]);
     }
     

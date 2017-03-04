@@ -3,16 +3,17 @@
 namespace frontend\controllers;
 
 use Yii;
-use app\models\Task;
+use app\models\Transport;
+use app\classes\Relations;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TaskController implements the CRUD actions for Task model.
+ * ProductController implements the CRUD actions for Product model.
  */
-class TaskController extends Controller
+class TransportController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,13 +31,13 @@ class TaskController extends Controller
     }
 
     /**
-     * Lists all Task models.
+     * Lists all Product models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Task::find()->orderBy("id DESC"),
+            'query' => Transport::find(),
         ]);
 
         return $this->render('index', [
@@ -45,7 +46,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Displays a single Task model.
+     * Displays a single Product model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +58,13 @@ class TaskController extends Controller
     }
 
     /**
-     * Creates a new Task model.
+     * Creates a new Product model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Task();
+        $model = new Transport();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -75,7 +76,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Updates an existing Task model.
+     * Updates an existing Product model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -83,42 +84,50 @@ class TaskController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        if (($rels = Relations::getRelations($this::className(),$id)) == false){
+            $answer = false;
+        } else {
+            $answer = true;
+        }
         
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'answer' => $answer
             ]);
         }
     }
 
     /**
-     * Deletes an existing Task model.
+     * Deletes an existing Product model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        if ($this->findModel($id)->status == 2) {
-            return $this->render('error',['name'=>'Ошибка','message'=>'Нельзя удалять задачу, которая имеет статус "В процессе"']);
+        if (($rels = Relations::getRelations($this::className(),$id)) == false){
+            $this->findModel($id)->delete();
+        } else {
+            $rels = implode  ("<br>" , $rels );
+            return $this->render('error',['name'=>'Ошибка','message'=>'Не удалось удалить объект, т.к. на него имеются ссылки в следующих объектах:<br>'.$rels]);
         }
-        $this->findModel($id)->delete();
-        
+
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Task model based on its primary key value.
+     * Finds the Product model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Task the loaded model
+     * @return Product the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Task::findOne($id)) !== null) {
+        if (($model = Transport::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

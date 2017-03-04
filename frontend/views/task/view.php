@@ -30,6 +30,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             [
+                'attribute' => 'id_transport',
+                'format' => 'raw',
+                'value' => function($data){ 
+                    if (isset($data->transport)){
+                        return $data->transport->name;
+                    } else {
+                        return "<ОБЪЕКТ НЕ НАЙДЕН>";
+                    }
+                }
+            ],
+            [
                 'attribute' => 'datetask',
                 'format' => 'raw',
                 'value' => function($data){       
@@ -84,6 +95,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $data->user->username;
                     } else {
                         return "<ОБЪЕКТ НЕ НАЙДЕН>";
+                    }
+                }
+            ],
+                        [
+                'attribute' => 'date_success',
+                'format' => 'raw',
+                'value' => function($data){       
+                    if (isset($data->date_success)){
+                        return date('d.m.Y H:i', strtotime($data->date_success));
+                    } else {
+                        return "";
                     }
                 }
             ],

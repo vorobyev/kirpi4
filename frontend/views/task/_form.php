@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Recipe;
+use app\models\Transport;
 use common\models\User;
 use kartik\widgets\DateTimePicker;
 /* @var $this yii\web\View */
@@ -14,6 +15,8 @@ use kartik\widgets\DateTimePicker;
 <div class="task-form">
 
     <?php $form = ActiveForm::begin(); 
+    
+    echo $form->field($model, 'id_transport')->dropDownList(ArrayHelper::merge([0=>"Ничего не выбрано..."],ArrayHelper::map(Transport::find()->all(), 'id', 'name')))->label('Транспорт');
         if (isset($model->dateredline)) {
            $model->dateredline = date('d.m.Y H:i', strtotime($model->dateredline));
         }

@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use app\models\Recipe;
 use app\models\Process;
+use app\models\Transport;
 use app\models\RecipeCompose;
 use app\models\Task;
 use common\models\User;
@@ -113,6 +114,7 @@ class Taskuser extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'id_user' => 'Для пользователя',
             'mail' => 'Сообщение',
+            'id_transport' => 'Транспорт',
         ];
     }
     
@@ -124,5 +126,8 @@ class Taskuser extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'id_user']);
     }
     
+    public function getTransport() {
+        return $this->hasOne(Transport::className(), ['id' => 'id_transport']);
+    }
 
 }

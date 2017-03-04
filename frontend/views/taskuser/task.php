@@ -10,15 +10,20 @@ $this->title = "Задача №".$task->id;
 $this->params['breadcrumbs'][] = ['label' => 'Задачи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-if (isset($error)) {
-    echo Alert::widget([
-    'options' => [
-        'class' => 'alert-danger',
-    ],
-    'body' => $error,
-]);
-    
+$transport = $task->transport;
+if (isset($transport)){
+    echo "<h3>Транспорт: <b>".$transport->name."</b></h3>";
 }
+echo "<h4>Срок выполнения задачи: <b>до ".date('d.m.Y H:i', strtotime($task->dateredline))."</b></h4>";
+//if (isset($error)) {
+//    echo Alert::widget([
+//    'options' => [
+//        'class' => 'alert-danger',
+//    ],
+//    'body' => $error,
+//]);
+//    
+//}
 
 foreach ($processes as $process) {
     $form = ActiveForm::begin(['layout' => 'horizontal']); 
@@ -161,7 +166,7 @@ if ($task->status == 1){
       $form = ActiveForm::begin(['layout' => 'horizontal']); 
       
         echo $form->field($processes[0], 'all')->hiddenInput()->label(false);
-        echo "<div style='text-align:center'>".Html::submitButton('<span class="glyphicon glyphicon-ok"></span> Выполнить задачу (внести все порции за один раз)', ['class' => 'btn btn-success btn-outline','style'=>'margin:0 auto'])."</div>";
+        echo "<div style='text-align:center'>".Html::submitButton('<span class="glyphicon glyphicon-ok"></span> Выполнить задачу', ['class' => 'btn btn-success btn-outline','style'=>'margin:0 auto','data-confirm'=>"После подтверждения выполнения нельзя будет вносить порции. Вы уверены?",])."</div>";
       ActiveForm::end(); 
   }
 //$task
