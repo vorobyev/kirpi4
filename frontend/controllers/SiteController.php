@@ -83,6 +83,14 @@ class SiteController extends Controller
         }
     }
 
+    public function actionDevelop()
+    {
+        if (isset(Yii::$app->user->identity)){
+            if (Yii::$app->user->identity->role == 1) {
+                return $this->render('develop');
+            }
+        }   
+    }
     /**
      * Logs in a user.
      *
@@ -156,18 +164,18 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
-            }
-        }
-
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
+//        $model = new SignupForm();
+//        if ($model->load(Yii::$app->request->post())) {
+//            if ($user = $model->signup()) {
+//                if (Yii::$app->getUser()->login($user)) {
+//                    return $this->goHome();
+//                }
+//            }
+//        }
+//
+//        return $this->render('signup', [
+//            'model' => $model,
+//        ]);
     }
 
     /**

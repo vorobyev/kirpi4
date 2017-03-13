@@ -36,6 +36,7 @@ class TransportController extends Controller
      */
     public function actionIndex()
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $dataProvider = new ActiveDataProvider([
             'query' => Transport::find(),
         ]);
@@ -43,6 +44,9 @@ class TransportController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -52,9 +56,13 @@ class TransportController extends Controller
      */
     public function actionView($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -64,6 +72,7 @@ class TransportController extends Controller
      */
     public function actionCreate()
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $model = new Transport();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -72,6 +81,9 @@ class TransportController extends Controller
             return $this->render('create', [
                 'model' => $model,
             ]);
+        }
+        } else {
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -83,6 +95,7 @@ class TransportController extends Controller
      */
     public function actionUpdate($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $model = $this->findModel($id);
         if (($rels = Relations::getRelations($this::className(),$id)) == false){
             $answer = false;
@@ -98,6 +111,9 @@ class TransportController extends Controller
                 'answer' => $answer
             ]);
         }
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -108,6 +124,7 @@ class TransportController extends Controller
      */
     public function actionDelete($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         if (($rels = Relations::getRelations($this::className(),$id)) == false){
             $this->findModel($id)->delete();
         } else {
@@ -116,6 +133,9 @@ class TransportController extends Controller
         }
 
         return $this->redirect(['index']);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**

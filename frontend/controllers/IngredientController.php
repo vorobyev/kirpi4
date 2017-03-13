@@ -36,13 +36,17 @@ class IngredientController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Ingredient::find(),
-        ]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $dataProvider = new ActiveDataProvider([
+                'query' => Ingredient::find(),
+            ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+            ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -52,9 +56,13 @@ class IngredientController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -64,15 +72,19 @@ class IngredientController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Ingredient();
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $model = new Ingredient();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+            return $this->redirect(['/site/index']);
+        }            
     }
 
     /**
@@ -83,20 +95,24 @@ class IngredientController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        if (($rels = Relations::getRelations($this::className(),$id)) == false){
-            $answer = false;
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $model = $this->findModel($id);
+            if (($rels = Relations::getRelations($this::className(),$id)) == false){
+                $answer = false;
+            } else {
+                $answer = true;
+            }
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                    'answer' => $answer
+                ]);
+            }
         } else {
-            $answer = true;
-        }
-        
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-                'answer' => $answer
-            ]);
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -108,14 +124,18 @@ class IngredientController extends Controller
      */
     public function actionDelete($id)
     {
-        if (($rels = Relations::getRelations($this::className(),$id)) == false){
-            $this->findModel($id)->delete();
-        } else {
-            $rels = implode  ("<br>" , $rels );
-            return $this->render('error',['name'=>'Ошибка','message'=>'Не удалось удалить объект, т.к. на него имеются ссылки в следующих объектах:<br>'.$rels]);
-        }
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            if (($rels = Relations::getRelations($this::className(),$id)) == false){
+                $this->findModel($id)->delete();
+            } else {
+                $rels = implode  ("<br>" , $rels );
+                return $this->render('error',['name'=>'Ошибка','message'=>'Не удалось удалить объект, т.к. на него имеются ссылки в следующих объектах:<br>'.$rels]);
+            }
 
-        return $this->redirect(['index']);
+            return $this->redirect(['index']);
+        } else {
+            return $this->redirect(['/site/index']);
+        }            
     }
 
     /**
@@ -127,10 +147,14 @@ class IngredientController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Ingredient::findOne($id)) !== null) {
-            return $model;
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            if (($model = Ingredient::findOne($id)) !== null) {
+                return $model;
+            } else {
+                throw new NotFoundHttpException('The requested page does not exist.');
+            }
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            return $this->redirect(['/site/index']);
         }
     }
 }

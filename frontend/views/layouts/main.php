@@ -36,7 +36,8 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label' => 'Справочники', 
+        (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label' => '<span class ="glyphicon glyphicon-book" ></span> Справочники', 
+            'encodeLabels' => false,
             'items' => [
                     ['label' => 'Готовые продукты', 'url' => ['/product']],
                     ['label' => 'Единицы измерения', 'url' => ['/measure']],
@@ -45,7 +46,7 @@ AppAsset::register($this);
                     ['label' => 'Транспорт', 'url' => ['/transport']]
                 ]
             ]:"",
-        (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label' => 'Отчеты', 
+        (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role == 1)?['label' => '<span class ="glyphicon glyphicon-stats" ></span> Отчеты', 
             'items' => [
                     ['label' => 'Использованные ингредиенты за период', 'url' => ['/report/job_period']],
                 ]
@@ -64,18 +65,19 @@ AppAsset::register($this);
     ];
     if (Yii::$app->user->isGuest) {
         //$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => '<span class ="glyphicon glyphicon-user" ></span> Войти', 'url' => ['/site/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                'Выйти (' . Yii::$app->user->identity->username . ')',
+                '<span class ="glyphicon glyphicon-log-out"></span> Выйти (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
             . '</li>';
     }
     echo Nav::widget([
+        'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,
     ]);
@@ -96,7 +98,7 @@ AppAsset::register($this);
     <div class="container">
         <p class="pull-left">&copy; ООО «Идеал Микс» <?= date('Y') ?></p>
 
-        <p class="pull-right"><?= Html::a('Наш сайт','http://idealmix.ru') ?></p>
+        <p class="pull-right"><?= Html::a('Наш сайт','http://idealmix.ru')." | ".Html::a('<span class ="glyphicon glyphicon-console" style="sont-size:14pt"></span>',['site/develop'])?></p>
     </div>
 </footer>
 

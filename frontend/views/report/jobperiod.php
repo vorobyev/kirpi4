@@ -1,5 +1,6 @@
 <?php
 use kartik\widgets\DateTimePicker;
+use kartik\widgets\SwitchInput;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
@@ -38,6 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col-lg-3">
 <?= $form->field($model, 'operator')->dropDownList(ArrayHelper::merge([0=>"Ничего не выбрано..."],ArrayHelper::map(User::find()->where(['role'=>2])->all(), 'id', 'username')))->label('Оператор') ?>
 </div>
+<?= $form->field($model, 'withTransport')->widget(SwitchInput::classname(), [
+    'pluginOptions' => [
+        'onText' => 'Да',
+        'offText' => 'Нет',
+    ]])->label('Расшифровка по транспорту'); ?>
 <div class="form-group col-lg-12">
     <?= Html::submitButton('Сформировать', ['class' => 'btn btn-info btn-outline']) ?>
 </div>
@@ -48,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 if (($report)&&($model->operator == 0)){
     echo "Выберите оператора!";
 }
-if (($report)&&($model->operator != 0)) {
+if (($report)&&($model->operator != 0)&&($model->withTransport==1)) {
     $datebegin = date_format(date_create_from_format('d.m.Y H:i', $model->datebegin),"Y-m-d H:i:s");
     $dateend = date_format(date_create_from_format('d.m.Y H:i', $model->dateend),"Y-m-d H:i:s");
     //$tasks = Task::find()->where(['status'=>3])->andWhere(['>=', 'date_success', $datebegin])->andWhere(['<=', 'date_success', $dateend])->andWhere(['id_user'=> $model->operator]);
@@ -86,6 +92,49 @@ if (($report)&&($model->operator != 0)) {
             }
         }
     }
+    
+
+    
+}
+
+if (($report)&&($model->operator != 0)&&($model->withTransport==0)) {
+    $datebegin = date_format(date_create_from_format('d.m.Y H:i', $model->datebegin),"Y-m-d H:i:s");
+    $dateend = date_format(date_create_from_format('d.m.Y H:i', $model->dateend),"Y-m-d H:i:s");
+    //$tasks = Task::find()->where(['status'=>3])->andWhere(['>=', 'date_success', $datebegin])->andWhere(['<=', 'date_success', $dateend])->andWhere(['id_user'=> $model->operator]);
+    $cont = Html::tag("th", "Ингредиент");
+    $cont = $cont.Html::tag("th", "План");
+    $cont = $cont.Html::tag("th", "Факт");
+    $cont = Html::tag("tr", $cont);
+    $cont = Html::tag("thead", $cont);
+
+    $operator = User::findOne($model->operator);
+    echo "<div>".$this->title."<br>Период: с ".$model->datebegin." по ".$model->dateend."<br>Оператор: ".$operator->username."</div>";
+    $tasks = Task::find()->where(['status'=>3])->andWhere(['>=', 'date_success', $datebegin])->andWhere(['<=', 'date_success', $dateend])->andWhere(['id_user'=> $model->operator])->all();
+    if (isset($tasks)) {
+        $cont_inner = "";
+        $arrs = [];
+        foreach ($tasks as $task){
+            $processes = Process::find()->where(['id_task'=>$task->id])->orderBy('id ASC')->all();
+            foreach ($processes as $process) {
+                if (array_key_exists($process->ingredient->name, $arrs)) {
+                    $arrs[$process->ingredient->name]['count'] = $arrs[$process->ingredient->name]['count'] + $process->count;
+                    $arrs[$process->ingredient->name]['count_fact'] = $arrs[$process->ingredient->name]['count_fact'] + $process->count_fact;
+                } else {
+                    $arrs = [$process->ingredient->name=>['count'=>$process->count,'count_fact'=>$process->count_fact]];
+                }
+            }
+        }
+        foreach ($arrs as $ind=>$arr) {
+            $par_ingredient = Html::tag("td", $ind);
+            $par_count = Html::tag("td", $arr['count']);
+            $par_count_fact = Html::tag("td", $arr['count_fact']);
+            $cont_inner = $cont_inner.Html::tag("tr", $par_ingredient.$par_count.$par_count_fact);
+        }
+        $cont_inner = Html::tag("tbody", $cont_inner);
+        $cont_result = Html::tag("table", $cont.$cont_inner,['class'=>'table']);
+        echo Html::tag("div", $cont_result, ['class'=>'table-responsive']);
+    }
+ 
     
 
     

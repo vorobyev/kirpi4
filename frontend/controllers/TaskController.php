@@ -35,6 +35,7 @@ class TaskController extends Controller
      */
     public function actionIndex()
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $dataProvider = new ActiveDataProvider([
             'query' => Task::find()->orderBy("id DESC"),
         ]);
@@ -42,6 +43,9 @@ class TaskController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -51,9 +55,13 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -63,6 +71,7 @@ class TaskController extends Controller
      */
     public function actionCreate()
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $model = new Task();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -71,6 +80,9 @@ class TaskController extends Controller
             return $this->render('create', [
                 'model' => $model,
             ]);
+        }
+        } else {
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -82,6 +94,7 @@ class TaskController extends Controller
      */
     public function actionUpdate($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $model = $this->findModel($id);
         
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -90,6 +103,9 @@ class TaskController extends Controller
             return $this->render('update', [
                 'model' => $model,
             ]);
+        }
+        } else {
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -101,12 +117,16 @@ class TaskController extends Controller
      */
     public function actionDelete($id)
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         if ($this->findModel($id)->status == 2) {
             return $this->render('error',['name'=>'Ошибка','message'=>'Нельзя удалять задачу, которая имеет статус "В процессе"']);
         }
         $this->findModel($id)->delete();
         
         return $this->redirect(['index']);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**

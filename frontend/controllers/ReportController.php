@@ -38,6 +38,7 @@ class ReportController extends Controller
      */
     public function actionJob_period()
     {
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
         $model = new Jobperiod();
         $report = false;
         if ($model->load(Yii::$app->request->post())) {
@@ -47,6 +48,9 @@ class ReportController extends Controller
             'model' => $model,
             'report' => $report
         ]);
+        } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     protected function findModel($id)

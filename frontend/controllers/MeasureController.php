@@ -36,13 +36,17 @@ class MeasureController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Measure::find(),
-        ]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $dataProvider = new ActiveDataProvider([
+                'query' => Measure::find(),
+            ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+            ]);
+                } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -52,9 +56,13 @@ class MeasureController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+                    } else {
+            return $this->redirect(['/site/index']);
+        }
     }
 
     /**
@@ -64,14 +72,18 @@ class MeasureController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Measure();
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $model = new Measure();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
+                    } else {
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -83,20 +95,24 @@ class MeasureController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        if (($rels = Relations::getRelations($this::className(),$id)) == false){
-            $answer = false;
-        } else {
-            $answer = true;
-        }
-        
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-                'answer' => $answer
-            ]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            $model = $this->findModel($id);
+            if (($rels = Relations::getRelations($this::className(),$id)) == false){
+                $answer = false;
+            } else {
+                $answer = true;
+            }
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                    'answer' => $answer
+                ]);
+            }
+                    } else {
+            return $this->redirect(['/site/index']);
         }
     }
 
@@ -108,13 +124,17 @@ class MeasureController extends Controller
      */
     public function actionDelete($id)
     {
-        if (($rels = Relations::getRelations($this::className(),$id)) == false){
-            $this->findModel($id)->delete();
-        } else {
-            $rels = implode  ("<br>" , $rels );
-            return $this->render('error',['name'=>'Ошибка','message'=>'Не удалось удалить объект, т.к. на него имеются ссылки в следующих объектах:<br>'.$rels]);
+        if ((isset(Yii::$app->user->identity))&&(Yii::$app->user->identity->role == 1)){
+            if (($rels = Relations::getRelations($this::className(),$id)) == false){
+                $this->findModel($id)->delete();
+            } else {
+                $rels = implode  ("<br>" , $rels );
+                return $this->render('error',['name'=>'Ошибка','message'=>'Не удалось удалить объект, т.к. на него имеются ссылки в следующих объектах:<br>'.$rels]);
+            }
+            return $this->redirect(['index']);
+                    } else {
+            return $this->redirect(['/site/index']);
         }
-        return $this->redirect(['index']);
     }
 
     /**

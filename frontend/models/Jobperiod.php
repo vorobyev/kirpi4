@@ -15,6 +15,7 @@ class Jobperiod extends \yii\db\ActiveRecord
     public $datebegin;
     public $dateend;
     public $operator;
+    public $withTransport = true;
 
     /**
      * @inheritdoc
@@ -23,7 +24,7 @@ class Jobperiod extends \yii\db\ActiveRecord
     {
         return [
             [['datebegin', 'dateend', 'operator'], 'required','message'=>'Поле необходимо заполнить'],
-            [['datebegin', 'dateend'], 'safe'],
+            [['datebegin', 'dateend','withTransport'], 'safe'],
         ];
     }
 
