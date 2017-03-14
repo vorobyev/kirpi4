@@ -120,7 +120,7 @@ if (($report)&&($model->operator != 0)&&($model->withTransport==0)) {
                     $arrs[$process->ingredient->name]['count'] = $arrs[$process->ingredient->name]['count'] + $process->count;
                     $arrs[$process->ingredient->name]['count_fact'] = $arrs[$process->ingredient->name]['count_fact'] + $process->count_fact;
                 } else {
-                    $arrs = [$process->ingredient->name=>['count'=>$process->count,'count_fact'=>$process->count_fact]];
+                    $arrs[] = [$process->ingredient->name=>['count'=>$process->count,'count_fact'=>$process->count_fact]];
                 }
             }
         }
