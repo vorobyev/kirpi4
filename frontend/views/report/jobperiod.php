@@ -72,8 +72,7 @@ if (($report)&&($model->operator != 0)&&($model->withTransport==1)) {
         echo "<div>".$this->title."<br>Период: с ".$model->datebegin." по ".$model->dateend."<br>Оператор: ".$operator->username."</div>";
         foreach ($transports as $transport) {
             $tasks_group_by_transport = Task::find()->where(['status'=>3])->andWhere(['>=', 'date_success', $datebegin])->andWhere(['<=', 'date_success', $dateend])->andWhere(['id_user'=> $model->operator])->andWhere(['id_transport'=>$transport->id])->all();
-            if (isset($tasks_group_by_transport)) {
-                echo "<h3>Транспорт: ".$transport->name."</h3>";
+            if (!empty($tasks_group_by_transport)) {
                 $cont_inner = "";
                 foreach ($tasks_group_by_transport as $task){
                     $processes = Process::find()->where(['id_task'=>$task->id])->orderBy('id ASC')->all();
@@ -88,7 +87,10 @@ if (($report)&&($model->operator != 0)&&($model->withTransport==1)) {
                 }
                 $cont_inner = Html::tag("tbody", $cont_inner);
                 $cont_result = Html::tag("table", $cont.$cont_inner,['class'=>'table']);
-                echo Html::tag("div", $cont_result, ['class'=>'table-responsive']);
+                if (!empty($processes)) {
+                    echo "<h3>Транспорт: ".$transport->name."</h3>";
+                    echo Html::tag("div", $cont_result, ['class'=>'table-responsive']);
+                }
             }
         }
     }
@@ -120,7 +122,7 @@ if (($report)&&($model->operator != 0)&&($model->withTransport==0)) {
                     $arrs[$process->ingredient->name]['count'] = $arrs[$process->ingredient->name]['count'] + $process->count;
                     $arrs[$process->ingredient->name]['count_fact'] = $arrs[$process->ingredient->name]['count_fact'] + $process->count_fact;
                 } else {
-                    $arrs = [$process->ingredient->name=>['count'=>$process->count,'count_fact'=>$process->count_fact]];
+                    $arrs[$process->ingredient->name] = ['count'=>$process->count,'count_fact'=>$process->count_fact];
                 }
             }
         }
